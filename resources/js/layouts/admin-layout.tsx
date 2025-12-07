@@ -279,13 +279,13 @@ export function AdminLayout({ children, title }: AdminLayoutProps) {
                             </SheetTrigger>
                             <SheetContent side="left" className="w-64 p-0">
                                 <div className="flex h-full flex-col">
-                                    <div className="flex h-16 flex-shrink-0 items-center gap-2 border-b px-6">
+                                    <div className="flex h-16 flex-shrink-0 justify-center items-center gap-2 border-b px-6">
                                         <img
                                             src={useCMSStore.getState().headerSettings?.logo.url || '/logo.png'}
                                             alt="Logo"
-                                            className="h-8 w-auto object-contain"
+                                            className="h-8"
                                         />
-                                        <span className="font-bold">Admin</span>
+                                        {/* <span className="font-bold">Admin</span> */}
                                     </div>
                                     <ScrollArea className="flex-1 px-3 py-4">
                                         <SidebarNav onNavClick={() => setMobileOpen(false)} />
