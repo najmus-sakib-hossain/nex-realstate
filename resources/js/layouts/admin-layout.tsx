@@ -1,4 +1,4 @@
-import { useAdminAuthStore } from '@/stores';
+import { useAdminAuthStore, useCMSStore } from '@/stores';
 import { Head, router } from '@inertiajs/react';
 import {
     BarChart3,
@@ -213,27 +213,33 @@ export function AdminLayout({ children, title }: AdminLayoutProps) {
                 <aside className="hidden w-64 flex-shrink-0 lg:block">
                     <div className="fixed top-0 left-0 z-30 flex h-screen w-64 flex-col border-r bg-background">
                         {/* Logo */}
-                        <div className="flex h-16 items-center gap-2 border-b px-6">
-                            <Building2 className="h-8 w-8 text-primary" />
-                            <span className="font-bold">Nex Admin</span>
+                        <div className="flex h-16 justify-center items-center border-b px-6 pb-2">
+                            <img
+                                src={useCMSStore.getState().headerSettings?.logo.url || '/logo.png'}
+                                alt="Logo"
+                                className="h-12"
+                            />
+                            {/* <span className="font-bold">Admin</span> */}
                         </div>
 
                         {/* Navigation */}
-                        <ScrollArea className="flex-1 px-3 py-4">
+                        <ScrollArea className="flex-1 px-3 py-4 max-h-[85vh]">
                             <SidebarNav />
                         </ScrollArea>
 
                         {/* User */}
-                        <div className="border-t p-4">
+                        <div className="border-t p-2 h-[8vh] flex items-center justify-center">
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button
                                         variant="ghost"
-                                        className="w-full justify-start gap-3"
+                                        className="w-full justify-start gap-3 p-6"
                                     >
-                                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-medium text-primary-foreground">
-                                            {user?.name?.charAt(0) || 'A'}
-                                        </div>
+                                        <img
+                                            src={useCMSStore.getState().headerSettings?.logo.url || '/logo.png'}
+                                            alt="Logo"
+                                            className="h-8 w-8 rounded-full object-contain bg-background border p-1"
+                                        />
                                         <div className="flex-1 text-left">
                                             <p className="text-sm font-medium">{user?.name}</p>
                                             <p className="text-xs text-muted-foreground">
@@ -273,9 +279,13 @@ export function AdminLayout({ children, title }: AdminLayoutProps) {
                             </SheetTrigger>
                             <SheetContent side="left" className="w-64 p-0">
                                 <div className="flex h-full flex-col">
-                                    <div className="flex h-16 items-center gap-2 border-b px-6">
-                                        <Building2 className="h-8 w-8 text-primary" />
-                                        <span className="font-bold">Nex Admin</span>
+                                    <div className="flex h-16 flex-shrink-0 items-center gap-2 border-b px-6">
+                                        <img
+                                            src={useCMSStore.getState().headerSettings?.logo.url || '/logo.png'}
+                                            alt="Logo"
+                                            className="h-8 w-auto object-contain"
+                                        />
+                                        <span className="font-bold">Admin</span>
                                     </div>
                                     <ScrollArea className="flex-1 px-3 py-4">
                                         <SidebarNav onNavClick={() => setMobileOpen(false)} />

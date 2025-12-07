@@ -79,17 +79,11 @@ export default function AdminSettingsPage() {
         <AdminLayout title="Settings">
             <div className="space-y-6">
                 {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h2 className="text-2xl font-bold">Site Settings</h2>
-                        <p className="text-muted-foreground">
-                            Manage your website settings and configurations
-                        </p>
-                    </div>
-                    <Button onClick={handleSave} disabled={isSaving}>
-                        <Save className="mr-2 h-4 w-4" />
-                        {isSaving ? 'Saving...' : 'Save Settings'}
-                    </Button>
+                <div>
+                    <h2 className="text-2xl font-bold">Site Settings</h2>
+                    <p className="text-muted-foreground">
+                        Manage your website settings and configurations
+                    </p>
                 </div>
 
                 <Tabs defaultValue="general">
