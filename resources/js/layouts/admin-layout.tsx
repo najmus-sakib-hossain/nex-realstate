@@ -4,8 +4,6 @@ import {
     BarChart3,
     Briefcase,
     Building2,
-    ChevronDown,
-    FileText,
     FolderKanban,
     Home,
     Image,
@@ -18,7 +16,6 @@ import {
     PanelBottom,
     Settings,
     Users,
-    X,
 } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
 import { Button } from '../components/ui/button';
@@ -45,20 +42,54 @@ const sidebarNavigation = [
         icon: BarChart3,
     },
     {
-        title: 'Pages',
-        icon: FileText,
-        children: [
-            { title: 'Home', href: '/admin/pages/home', icon: Home },
-            { title: 'About', href: '/admin/pages/about', icon: Users },
-            { title: 'Services', href: '/admin/pages/services', icon: Layers },
-            { title: 'Products', href: '/admin/pages/products', icon: FolderKanban },
-            { title: 'Investment', href: '/admin/pages/investment', icon: BarChart3 },
-            { title: 'Business', href: '/admin/pages/business', icon: Building2 },
-            { title: 'Land Wanted', href: '/admin/pages/land-wanted', icon: FolderKanban },
-            { title: 'Contact', href: '/admin/pages/contact', icon: Mail },
-            { title: 'Career', href: '/admin/pages/career', icon: Briefcase },
-            { title: 'Media', href: '/admin/pages/media', icon: Newspaper },
-        ],
+        title: 'Home',
+        href: '/admin/pages/home',
+        icon: Home,
+    },
+    {
+        title: 'About',
+        href: '/admin/pages/about',
+        icon: Users,
+    },
+    {
+        title: 'Services',
+        href: '/admin/pages/services',
+        icon: Layers,
+    },
+    {
+        title: 'Products',
+        href: '/admin/pages/products',
+        icon: FolderKanban,
+    },
+    {
+        title: 'Investment',
+        href: '/admin/pages/investment',
+        icon: BarChart3,
+    },
+    {
+        title: 'Business',
+        href: '/admin/pages/business',
+        icon: Building2,
+    },
+    {
+        title: 'Land Wanted',
+        href: '/admin/pages/land-wanted',
+        icon: FolderKanban,
+    },
+    {
+        title: 'Contact',
+        href: '/admin/pages/contact',
+        icon: Mail,
+    },
+    {
+        title: 'Career',
+        href: '/admin/pages/career',
+        icon: Briefcase,
+    },
+    {
+        title: 'Media',
+        href: '/admin/pages/media',
+        icon: Newspaper,
     },
     {
         title: 'Header & Navigation',
@@ -114,61 +145,10 @@ function SidebarNav({
     className?: string;
     onNavClick?: () => void;
 }) {
-    const [openMenus, setOpenMenus] = useState<string[]>(['Pages']);
-
-    const toggleMenu = (title: string) => {
-        setOpenMenus((prev) =>
-            prev.includes(title)
-                ? prev.filter((t) => t !== title)
-                : [...prev, title],
-        );
-    };
-
     return (
         <nav className={cn('space-y-1', className)}>
             {sidebarNavigation.map((item) => {
                 const Icon = item.icon;
-
-                if (item.children) {
-                    const isOpen = openMenus.includes(item.title);
-                    return (
-                        <div key={item.title}>
-                            <button
-                                onClick={() => toggleMenu(item.title)}
-                                className="flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium text-foreground hover:bg-accent hover:text-accent-foreground"
-                            >
-                                <div className="flex items-center gap-3">
-                                    <Icon className="h-5 w-5" />
-                                    {item.title}
-                                </div>
-                                <ChevronDown
-                                    className={cn(
-                                        'h-4 w-4 transition-transform',
-                                        isOpen && 'rotate-180',
-                                    )}
-                                />
-                            </button>
-                            {isOpen && (
-                                <div className="ml-4 mt-1 space-y-1 border-l pl-4">
-                                    {item.children.map((child) => {
-                                        const ChildIcon = child.icon;
-                                        return (
-                                            <a
-                                                key={child.href}
-                                                href={child.href}
-                                                onClick={onNavClick}
-                                                className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                                            >
-                                                <ChildIcon className="h-4 w-4" />
-                                                {child.title}
-                                            </a>
-                                        );
-                                    })}
-                                </div>
-                            )}
-                        </div>
-                    );
-                }
 
                 return (
                     <a
