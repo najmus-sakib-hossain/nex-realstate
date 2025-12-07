@@ -34,66 +34,8 @@ export function Navbar() {
 
     return (
         <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
-            {/* Top Bar */}
-            {/* {headerSettings.showTopBar && (
-                <div className="hidden border-b bg-primary text-sm text-primary-foreground lg:block">
-                    <div className="container mx-auto flex items-center justify-between px-4 py-2">
-                        <div className="flex items-center gap-6">
-                            <a
-                                href={`tel:${headerSettings.topBar.contactPhone.replace(/\s/g, '')}`}
-                                className="flex items-center gap-2 transition-opacity hover:opacity-80"
-                            >
-                                <Phone className="h-4 w-4" />
-                                {headerSettings.topBar.contactPhone}
-                            </a>
-                            <a
-                                href={`mailto:${headerSettings.topBar.contactEmail}`}
-                                className="flex items-center gap-2 transition-opacity hover:opacity-80"
-                            >
-                                <Mail className="h-4 w-4" />
-                                {headerSettings.topBar.contactEmail}
-                            </a>
-                        </div>
-                        <div className="flex items-center gap-4">
-                            {headerSettings.topBar.socialLinks.facebook && (
-                                <a
-                                    href={headerSettings.topBar.socialLinks.facebook}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="hover:text-primary-foreground/80"
-                                >
-                                    <Facebook className="h-4 w-4" />
-                                </a>
-                            )}
-                            {headerSettings.topBar.socialLinks.youtube && (
-                                <a
-                                    href={headerSettings.topBar.socialLinks.youtube}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="hover:text-primary-foreground/80"
-                                >
-                                    <Youtube className="h-4 w-4" />
-                                </a>
-                            )}
-                            {headerSettings.topBar.socialLinks.linkedin && (
-                                <a
-                                    href={headerSettings.topBar.socialLinks.linkedin}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="hover:text-primary-foreground/80"
-                                >
-                                    <Linkedin className="h-4 w-4" />
-                                </a>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )} */}
-
-            {/* Main Navigation */}
             <div className="container mx-auto w-full">
                 <div className="flex h-16 items-center justify-between">
-                    {/* Logo */}
                     <Link href="/" className="flex items-center gap-2">
                         <img
                             src={headerSettings.logo.url}
@@ -101,8 +43,6 @@ export function Navbar() {
                             className="h-12 w-auto"
                         />
                     </Link>
-
-                    {/* Desktop Navigation */}
                     <nav className="hidden items-center gap-1 lg:flex">
                         {navigation.map((item) =>
                             item.children && item.children.length > 0 ? (
@@ -131,7 +71,7 @@ export function Navbar() {
                                     key={item.id}
                                     href={item.href}
                                     className={cn(
-                                        'px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground',
+                                        'truncate px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground',
                                     )}
                                 >
                                     {item.name}
@@ -139,8 +79,6 @@ export function Navbar() {
                             ),
                         )}
                     </nav>
-
-                    {/* Actions */}
                     <div className="hidden items-center gap-4 lg:flex">
                         <Button asChild>
                             <Link href={headerSettings.ctaButton.href}>
@@ -148,8 +86,6 @@ export function Navbar() {
                             </Link>
                         </Button>
                     </div>
-
-                    {/* Mobile Menu */}
                     <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
                         <SheetTrigger asChild className="lg:hidden">
                             <Button variant="ghost" size="icon">
@@ -277,7 +213,6 @@ export function Footer() {
         <footer className="border-t bg-muted/50 text-muted-foreground">
             <div className="container mx-auto px-4 py-12">
                 <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-                    {/* Company Info */}
                     <div>
                         <div className="mb-4">
                             <img
@@ -320,8 +255,6 @@ export function Footer() {
                             )}
                         </div>
                     </div>
-
-                    {/* Dynamic Columns */}
                     {columns.map((column) => (
                         <div key={column.id}>
                             <h3 className="mb-4 text-lg font-semibold text-foreground">
