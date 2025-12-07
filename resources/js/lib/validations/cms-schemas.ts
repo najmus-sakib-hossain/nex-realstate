@@ -432,6 +432,46 @@ export const testimonialSchema = z.object({
 });
 
 // ================================
+// HEADER SETTINGS SCHEMA
+// ================================
+
+export const navigationChildItemSchema = z.object({
+    id: z.string(),
+    name: z.string().min(1, 'Name is required'),
+    href: z.string().min(1, 'Link is required'),
+    order: z.number().int().min(0),
+});
+
+export const navigationItemSchema = z.object({
+    id: z.string(),
+    name: z.string().min(1, 'Name is required'),
+    href: z.string().min(1, 'Link is required'),
+    order: z.number().int().min(0),
+    children: z.array(navigationChildItemSchema).optional(),
+});
+
+export const headerSettingsSchema = z.object({
+    logo: imageSchema,
+    brandName: z.string().min(1, 'Brand name is required'),
+    brandNameHighlight: z.string().min(1, 'Brand name highlight is required'),
+    showTopBar: z.boolean(),
+    topBar: z.object({
+        contactPhone: z.string().min(1, 'Contact phone is required'),
+        contactEmail: z.string().email('Must be a valid email'),
+        socialLinks: z.object({
+            facebook: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+            youtube: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+            linkedin: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+        }),
+    }),
+    navigation: z.array(navigationItemSchema).min(1, 'At least one navigation item is required'),
+    ctaButton: z.object({
+        text: z.string().min(1, 'Button text is required'),
+        href: z.string().min(1, 'Button link is required'),
+    }),
+});
+
+// ================================
 // TYPE EXPORTS
 // ================================
 
@@ -451,3 +491,6 @@ export type ProjectFormData = z.infer<typeof projectSchema>;
 export type NewsArticleFormData = z.infer<typeof newsArticleSchema>;
 export type TestimonialFormData = z.infer<typeof testimonialSchema>;
 export type JobOpeningFormData = z.infer<typeof jobOpeningSchema>;
+export type HeaderSettingsFormData = z.infer<typeof headerSettingsSchema>;
+export type NavigationItemFormData = z.infer<typeof navigationItemSchema>;
+export type NavigationChildItemFormData = z.infer<typeof navigationChildItemSchema>;

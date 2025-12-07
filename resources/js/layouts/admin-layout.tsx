@@ -7,6 +7,7 @@ import {
     ChevronDown,
     FileText,
     FolderKanban,
+    Header,
     Home,
     Image,
     Layers,
@@ -57,6 +58,11 @@ const sidebarNavigation = [
             { title: 'Career', href: '/admin/pages/career', icon: Briefcase },
             { title: 'Media', href: '/admin/pages/media', icon: Newspaper },
         ],
+    },
+    {
+        title: 'Header & Navigation',
+        href: '/admin/header',
+        icon: Header,
     },
     {
         title: 'Projects',

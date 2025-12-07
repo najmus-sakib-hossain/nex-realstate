@@ -1,5 +1,6 @@
 import { ModeToggle } from '@/components/mode-toggle';
 import { cn } from '@/lib/utils';
+import { useCMSStore } from '@/stores/cms-store';
 import { Link } from '@inertiajs/react';
 import {
     Building2,
@@ -23,120 +24,93 @@ import {
 } from './ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 
-const navigation = [
-    { name: 'Home', href: '/' },
-    { name: 'About Us', href: '/about' },
-    {
-        name: 'Services',
-        href: '/services',
-        children: [
-            { name: 'Project Management', href: '/services/project-management' },
-            { name: 'Consultancy', href: '/services/consultancy' },
-            { name: 'Property Buy & Sales', href: '/services/property-buy-sales' },
-            { name: 'Land Development', href: '/services/land-development' },
-            { name: 'Construction Services', href: '/services/construction-services' },
-            { name: 'Interior & Design', href: '/services/interior-design' },
-            { name: 'After-Sales Support', href: '/services/after-sales-support' },
-        ],
-    },
-    {
-        name: 'Products',
-        href: '/products',
-        children: [
-            { name: 'Residential', href: '/products/residential' },
-            { name: 'Commercial', href: '/products/commercial' },
-            { name: 'Land', href: '/products/land' },
-            { name: 'Resorts', href: '/products/resorts' },
-            { name: 'Hospitals', href: '/products/hospitals' },
-            { name: 'Hotels', href: '/products/hotels' },
-        ],
-    },
-    {
-        name: 'Projects',
-        href: '/projects',
-        children: [
-            { name: 'Ongoing', href: '/projects/ongoing' },
-            { name: 'Completed', href: '/projects/completed' },
-            { name: 'Upcoming', href: '/projects/upcoming' },
-        ],
-    },
-    { name: 'Investment', href: '/investment' },
-    { name: 'Land Wanted', href: '/land-wanted' },
-    { name: 'Media & News', href: '/media' },
-    { name: 'Career', href: '/career' },
-    { name: 'Business', href: '/business' },
-    { name: 'Contact', href: '/contact' },
-];
-
 export function Navbar() {
     const [mobileOpen, setMobileOpen] = useState(false);
+    const { headerSettings } = useCMSStore();
+
+    if (!headerSettings) return null;
+
+    const navigation = headerSettings.navigation.sort((a, b) => a.order - b.order);
 
     return (
         <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
             {/* Top Bar */}
-            <div className="hidden border-b bg-primary text-sm text-primary-foreground lg:block">
-                <div className="container mx-auto flex items-center justify-between px-4 py-2">
-                    <div className="flex items-center gap-6">
-                        <a
-                            href="tel:+8801677600000"
-                            className="flex items-center gap-2 transition-opacity hover:opacity-80"
-                        >
-                            <Phone className="h-4 w-4" />
-                            +880 1677-600000
-                        </a>
-                        <a
-                            href="mailto:hello.nexrealestate@gmail.com"
-                            className="flex items-center gap-2 transition-opacity hover:opacity-80"
-                        >
-                            <Mail className="h-4 w-4" />
-                            hello.nexrealestate@gmail.com
-                        </a>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <a
-                            href="https://www.facebook.com/NexRealEstateLtd"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:text-primary-foreground/80"
-                        >
-                            <Facebook className="h-4 w-4" />
-                        </a>
-                        <a
-                            href="https://www.youtube.com/@NexRealEstateLtd"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:text-primary-foreground/80"
-                        >
-                            <Youtube className="h-4 w-4" />
-                        </a>
-                        <a
-                            href="https://www.linkedin.com/company/nex-realestate/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:text-primary-foreground/80"
-                        >
-                            <Linkedin className="h-4 w-4" />
-                        </a>
+            {headerSettings.showTopBar && (
+                <div className="hidden border-b bg-primary text-sm text-primary-foreground lg:block">
+                    <div className="container mx-auto flex items-center justify-between px-4 py-2">
+                        <div className="flex items-center gap-6">
+                            <a
+                                href={`tel:${headerSettings.topBar.contactPhone.replace(/\s/g, '')}`}
+                                className="flex items-center gap-2 transition-opacity hover:opacity-80"
+                            >
+                                <Phone className="h-4 w-4" />
+                                {headerSettings.topBar.contactPhone}
+                            </a>
+                            <a
+                                href={`mailto:${headerSettings.topBar.contactEmail}`}
+                                className="flex items-center gap-2 transition-opacity hover:opacity-80"
+                            >
+                                <Mail className="h-4 w-4" />
+                                {headerSettings.topBar.contactEmail}
+                            </a>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            {headerSettings.topBar.socialLinks.facebook && (
+                                <a
+                                    href={headerSettings.topBar.socialLinks.facebook}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="hover:text-primary-foreground/80"
+                                >
+                                    <Facebook className="h-4 w-4" />
+                                </a>
+                            )}
+                            {headerSettings.topBar.socialLinks.youtube && (
+                                <a
+                                    href={headerSettings.topBar.socialLinks.youtube}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="hover:text-primary-foreground/80"
+                                >
+                                    <Youtube className="h-4 w-4" />
+                                </a>
+                            )}
+                            {headerSettings.topBar.socialLinks.linkedin && (
+                                <a
+                                    href={headerSettings.topBar.socialLinks.linkedin}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="hover:text-primary-foreground/80"
+                                >
+                                    <Linkedin className="h-4 w-4" />
+                                </a>
+                            )}
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
 
             {/* Main Navigation */}
             <div className="container mx-auto px-4 w-full lg:max-w-9xl">
                 <div className="flex h-16 items-center justify-between">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2">
-                        <Building2 className="h-8 w-8 text-primary" />
+                        <img
+                            src={headerSettings.logo.url}
+                            alt={headerSettings.logo.alt}
+                            className="h-8 w-auto"
+                        />
                         <span className="text-xl font-bold">
-                            Nex <span className="text-primary">Real Estate</span>
+                            {headerSettings.brandName}{' '}
+                            <span className="text-primary">{headerSettings.brandNameHighlight}</span>
                         </span>
                     </Link>
 
                     {/* Desktop Navigation */}
                     <nav className="hidden items-center gap-1 lg:flex">
                         {navigation.map((item) =>
-                            item.children ? (
-                                <DropdownMenu key={item.name}>
+                            item.children && item.children.length > 0 ? (
+                                <DropdownMenu key={item.id}>
                                     <DropdownMenuTrigger asChild>
                                         <Button
                                             variant="ghost"
@@ -147,16 +121,18 @@ export function Navbar() {
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="start" className="min-w-[240px]">
-                                        {item.children.map((child) => (
-                                            <DropdownMenuItem key={child.name} asChild>
-                                                <Link href={child.href}>{child.name}</Link>
-                                            </DropdownMenuItem>
-                                        ))}
+                                        {item.children
+                                            .sort((a, b) => a.order - b.order)
+                                            .map((child) => (
+                                                <DropdownMenuItem key={child.id} asChild>
+                                                    <Link href={child.href}>{child.name}</Link>
+                                                </DropdownMenuItem>
+                                            ))}
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             ) : (
                                 <Link
-                                    key={item.name}
+                                    key={item.id}
                                     href={item.href}
                                     className={cn(
                                         'px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground',
@@ -171,7 +147,9 @@ export function Navbar() {
                     {/* Actions */}
                     <div className="hidden items-center gap-4 lg:flex">
                         <Button asChild>
-                            <Link href="/contact">Book a Visit</Link>
+                            <Link href={headerSettings.ctaButton.href}>
+                                {headerSettings.ctaButton.text}
+                            </Link>
                         </Button>
                     </div>
 
@@ -190,34 +168,45 @@ export function Navbar() {
                                     className="flex items-center gap-2 text-lg font-semibold"
                                     onClick={() => setMobileOpen(false)}
                                 >
-                                    <Building2 className="h-7 w-7 text-primary" />
-                                    Nex Real Estate
+                                    <img
+                                        src={headerSettings.logo.url}
+                                        alt={headerSettings.logo.alt}
+                                        className="h-7 w-auto"
+                                    />
+                                    {headerSettings.brandName} {headerSettings.brandNameHighlight}
                                 </Link>
                             </div>
                             <div className="space-y-6 overflow-y-auto px-6 py-6">
                                 <nav className="space-y-3">
                                     {navigation.map((item) => (
-                                        <div key={item.name} className="rounded-2xl border border-border/60 bg-muted/30 p-3 shadow-sm">
+                                        <div
+                                            key={item.id}
+                                            className="rounded-2xl border border-border/60 bg-muted/30 p-3 shadow-sm"
+                                        >
                                             <Link
                                                 href={item.href}
                                                 className="flex items-center justify-between text-base font-semibold"
                                                 onClick={() => setMobileOpen(false)}
                                             >
                                                 {item.name}
-                                                {item.children && <ChevronDown className="h-4 w-4 text-muted-foreground" />}
+                                                {item.children && item.children.length > 0 && (
+                                                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                                                )}
                                             </Link>
-                                            {item.children && (
+                                            {item.children && item.children.length > 0 && (
                                                 <div className="mt-3 space-y-2 pl-1">
-                                                    {item.children.map((child) => (
-                                                        <Link
-                                                            key={child.name}
-                                                            href={child.href}
-                                                            className="block rounded-lg px-2 py-1.5 text-sm text-muted-foreground hover:bg-background hover:text-foreground"
-                                                            onClick={() => setMobileOpen(false)}
-                                                        >
-                                                            {child.name}
-                                                        </Link>
-                                                    ))}
+                                                    {item.children
+                                                        .sort((a, b) => a.order - b.order)
+                                                        .map((child) => (
+                                                            <Link
+                                                                key={child.id}
+                                                                href={child.href}
+                                                                className="block rounded-lg px-2 py-1.5 text-sm text-muted-foreground hover:bg-background hover:text-foreground"
+                                                                onClick={() => setMobileOpen(false)}
+                                                            >
+                                                                {child.name}
+                                                            </Link>
+                                                        ))}
                                                 </div>
                                             )}
                                         </div>
@@ -225,8 +214,11 @@ export function Navbar() {
                                 </nav>
                                 <div className="space-y-3">
                                     <Button className="w-full" asChild>
-                                        <Link href="/contact" onClick={() => setMobileOpen(false)}>
-                                            Book a Visit
+                                        <Link
+                                            href={headerSettings.ctaButton.href}
+                                            onClick={() => setMobileOpen(false)}
+                                        >
+                                            {headerSettings.ctaButton.text}
                                         </Link>
                                     </Button>
                                     <Button variant="outline" className="w-full" asChild>
@@ -235,33 +227,41 @@ export function Navbar() {
                                         </Link>
                                     </Button>
                                 </div>
-                                <div className="flex items-center gap-4 text-muted-foreground">
-                                    <ModeToggle />
-                                    <a
-                                        href="https://www.facebook.com/NexRealEstateLtd"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="hover:text-foreground"
-                                    >
-                                        <Facebook className="h-5 w-5" />
-                                    </a>
-                                    <a
-                                        href="https://www.youtube.com/@NexRealEstateLtd"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="hover:text-foreground"
-                                    >
-                                        <Youtube className="h-5 w-5" />
-                                    </a>
-                                    <a
-                                        href="https://www.linkedin.com/company/nex-realestate/"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="hover:text-foreground"
-                                    >
-                                        <Linkedin className="h-5 w-5" />
-                                    </a>
-                                </div>
+                                {headerSettings.showTopBar && (
+                                    <div className="flex items-center gap-4 text-muted-foreground">
+                                        <ModeToggle />
+                                        {headerSettings.topBar.socialLinks.facebook && (
+                                            <a
+                                                href={headerSettings.topBar.socialLinks.facebook}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="hover:text-foreground"
+                                            >
+                                                <Facebook className="h-5 w-5" />
+                                            </a>
+                                        )}
+                                        {headerSettings.topBar.socialLinks.youtube && (
+                                            <a
+                                                href={headerSettings.topBar.socialLinks.youtube}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="hover:text-foreground"
+                                            >
+                                                <Youtube className="h-5 w-5" />
+                                            </a>
+                                        )}
+                                        {headerSettings.topBar.socialLinks.linkedin && (
+                                            <a
+                                                href={headerSettings.topBar.socialLinks.linkedin}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="hover:text-foreground"
+                                            >
+                                                <Linkedin className="h-5 w-5" />
+                                            </a>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </SheetContent>
                     </Sheet>

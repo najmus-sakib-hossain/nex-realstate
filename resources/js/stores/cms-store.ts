@@ -6,6 +6,7 @@ import type {
     ContactInquiry,
     ContactPageContent,
     FeaturedProject,
+    HeaderSettings,
     HomePageContent,
     InvestmentPageContent,
     LandWantedPageContent,
@@ -94,6 +95,7 @@ interface CMSState {
 
     // Site Settings
     siteSettings: SiteSettings | null;
+    headerSettings: HeaderSettings | null;
 
     // Initialize with default data
     initialize: () => void;
@@ -125,6 +127,7 @@ interface CMSState {
     setCareerApplications: (applications: CareerApplication[]) => void;
 
     setSiteSettings: (settings: SiteSettings) => void;
+    setHeaderSettings: (settings: HeaderSettings) => void;
 
     // Utility actions
     updateProject: (id: string, updates: Partial<Project>) => void;
@@ -178,6 +181,79 @@ const initialState = {
     contactInquiries: dummyContactInquiries,
     careerApplications: dummyCareerApplications,
     siteSettings: null as SiteSettings | null,
+    headerSettings: {
+        logo: {
+            id: 'header-logo-1',
+            url: '/logo.png',
+            alt: 'Nex Real Estate Logo',
+        },
+        brandName: 'Nex',
+        brandNameHighlight: 'Real Estate',
+        showTopBar: true,
+        topBar: {
+            contactPhone: '+880 1677-600000',
+            contactEmail: 'hello.nexrealestate@gmail.com',
+            socialLinks: {
+                facebook: 'https://www.facebook.com/NexRealEstateLtd',
+                youtube: 'https://www.youtube.com/@NexRealEstateLtd',
+                linkedin: 'https://www.linkedin.com/company/nex-realestate/',
+            },
+        },
+        navigation: [
+            { id: 'nav-1', name: 'Home', href: '/', order: 1 },
+            { id: 'nav-2', name: 'About Us', href: '/about', order: 2 },
+            {
+                id: 'nav-3',
+                name: 'Services',
+                href: '/services',
+                order: 3,
+                children: [
+                    { id: 'nav-3-1', name: 'Project Management', href: '/services/project-management', order: 1 },
+                    { id: 'nav-3-2', name: 'Consultancy', href: '/services/consultancy', order: 2 },
+                    { id: 'nav-3-3', name: 'Property Buy & Sales', href: '/services/property-buy-sales', order: 3 },
+                    { id: 'nav-3-4', name: 'Land Development', href: '/services/land-development', order: 4 },
+                    { id: 'nav-3-5', name: 'Construction Services', href: '/services/construction-services', order: 5 },
+                    { id: 'nav-3-6', name: 'Interior & Design', href: '/services/interior-design', order: 6 },
+                    { id: 'nav-3-7', name: 'After-Sales Support', href: '/services/after-sales-support', order: 7 },
+                ],
+            },
+            {
+                id: 'nav-4',
+                name: 'Products',
+                href: '/products',
+                order: 4,
+                children: [
+                    { id: 'nav-4-1', name: 'Residential', href: '/products/residential', order: 1 },
+                    { id: 'nav-4-2', name: 'Commercial', href: '/products/commercial', order: 2 },
+                    { id: 'nav-4-3', name: 'Land', href: '/products/land', order: 3 },
+                    { id: 'nav-4-4', name: 'Resorts', href: '/products/resorts', order: 4 },
+                    { id: 'nav-4-5', name: 'Hospitals', href: '/products/hospitals', order: 5 },
+                    { id: 'nav-4-6', name: 'Hotels', href: '/products/hotels', order: 6 },
+                ],
+            },
+            {
+                id: 'nav-5',
+                name: 'Projects',
+                href: '/projects',
+                order: 5,
+                children: [
+                    { id: 'nav-5-1', name: 'Ongoing', href: '/projects/ongoing', order: 1 },
+                    { id: 'nav-5-2', name: 'Completed', href: '/projects/completed', order: 2 },
+                    { id: 'nav-5-3', name: 'Upcoming', href: '/projects/upcoming', order: 3 },
+                ],
+            },
+            { id: 'nav-6', name: 'Investment', href: '/investment', order: 6 },
+            { id: 'nav-7', name: 'Land Wanted', href: '/land-wanted', order: 7 },
+            { id: 'nav-8', name: 'Media & News', href: '/media', order: 8 },
+            { id: 'nav-9', name: 'Career', href: '/career', order: 9 },
+            { id: 'nav-10', name: 'Business', href: '/business', order: 10 },
+            { id: 'nav-11', name: 'Contact', href: '/contact', order: 11 },
+        ],
+        ctaButton: {
+            text: 'Book a Visit',
+            href: '/contact',
+        },
+    } as HeaderSettings,
 };
 
 export const useCMSStore = create<CMSState>()(
@@ -239,8 +315,9 @@ export const useCMSStore = create<CMSState>()(
                         set({ careerApplications: applications }),
 
                     setSiteSettings: (settings) => set({ siteSettings: settings }),
+                    setHeaderSettings: (settings) => set({ headerSettings: settings }),
 
-                    // Utility Actions
+                    // Project Actions
                     updateProject: (id, updates) =>
                         set((state) => ({
                             projects: state.projects.map((p) =>
@@ -356,6 +433,7 @@ export const useCMSStore = create<CMSState>()(
                     contactInquiries: state.contactInquiries,
                     careerApplications: state.careerApplications,
                     activityLog: state.activityLog,
+                    headerSettings: state.headerSettings,
                 }),
             },
         ),

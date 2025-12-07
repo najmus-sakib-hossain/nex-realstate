@@ -179,6 +179,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         return Inertia::render('admin/leads/index');
     })->name('leads');
 
+    // Header Settings
+    Route::get('/header', function () {
+        return Inertia::render('admin/header/index');
+    })->name('header');
+
     // Settings
     Route::get('/settings', function () {
         return Inertia::render('admin/settings/index');
