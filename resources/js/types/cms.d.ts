@@ -476,6 +476,42 @@ export interface BusinessPageContent {
 // SITE SETTINGS
 // ================================
 
+export interface NavigationItem {
+    id: string;
+    name: string;
+    href: string;
+    order: number;
+    children?: NavigationChildItem[];
+}
+
+export interface NavigationChildItem {
+    id: string;
+    name: string;
+    href: string;
+    order: number;
+}
+
+export interface HeaderSettings {
+    logo: ImageAsset;
+    brandName: string;
+    brandNameHighlight: string; // The highlighted part (e.g., "Real Estate")
+    showTopBar: boolean;
+    topBar: {
+        contactPhone: string;
+        contactEmail: string;
+        socialLinks: {
+            facebook?: string;
+            youtube?: string;
+            linkedin?: string;
+        };
+    };
+    navigation: NavigationItem[];
+    ctaButton: {
+        text: string;
+        href: string;
+    };
+}
+
 export interface SiteSettings {
     siteName: string;
     tagline: string;
