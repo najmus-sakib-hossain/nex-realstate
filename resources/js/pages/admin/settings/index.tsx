@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 const defaultSettings: SiteSettings = {
     siteName: 'Nex Realstate',
     tagline: 'Building Dreams, Creating Futures',
-    logo: { id: 'logo-1', url: '/images/logo.png', alt: 'Nex Realstate' },
+    logo: { id: 'logo-1', url: '/logo.png', alt: 'Nex Realstate' },
     favicon: { id: 'fav-1', url: '/favicon.ico', alt: 'Favicon' },
     contactEmail: 'info@nexrealstate.com',
     contactPhone: ['+880 1234-567890', '+880 1234-567891'],

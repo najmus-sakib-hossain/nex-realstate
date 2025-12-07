@@ -6,6 +6,7 @@ import type {
     ContactInquiry,
     ContactPageContent,
     FeaturedProject,
+    FooterSettings,
     HeaderSettings,
     HomePageContent,
     InvestmentPageContent,
@@ -96,6 +97,7 @@ interface CMSState {
     // Site Settings
     siteSettings: SiteSettings | null;
     headerSettings: HeaderSettings | null;
+    footerSettings: FooterSettings | null;
 
     // Initialize with default data
     initialize: () => void;
@@ -128,6 +130,7 @@ interface CMSState {
 
     setSiteSettings: (settings: SiteSettings) => void;
     setHeaderSettings: (settings: HeaderSettings) => void;
+    setFooterSettings: (settings: FooterSettings) => void;
 
     // Utility actions
     updateProject: (id: string, updates: Partial<Project>) => void;
@@ -254,6 +257,59 @@ const initialState = {
             href: '/contact',
         },
     } as HeaderSettings,
+    footerSettings: {
+        logo: {
+            id: 'footer-logo-1',
+            url: '/logo.png',
+            alt: 'Nex Real Estate Logo',
+        },
+        tagline: 'Where Quality meets Comfort, and every space builds a lasting Legacy.',
+        columns: [
+            {
+                id: 'footer-col-1',
+                title: 'Quick Links',
+                order: 1,
+                links: [
+                    { id: 'footer-link-1-1', label: 'About Us', href: '/about', order: 1 },
+                    { id: 'footer-link-1-2', label: 'Services', href: '/services', order: 2 },
+                    { id: 'footer-link-1-3', label: 'Projects', href: '/projects', order: 3 },
+                    { id: 'footer-link-1-4', label: 'Investment', href: '/investment', order: 4 },
+                    { id: 'footer-link-1-5', label: 'Careers', href: '/career', order: 5 },
+                    { id: 'footer-link-1-6', label: 'Contact', href: '/contact', order: 6 },
+                ],
+            },
+            {
+                id: 'footer-col-2',
+                title: 'Products',
+                order: 2,
+                links: [
+                    { id: 'footer-link-2-1', label: 'Residential', href: '/products/residential', order: 1 },
+                    { id: 'footer-link-2-2', label: 'Commercial', href: '/products/commercial', order: 2 },
+                    { id: 'footer-link-2-3', label: 'Land', href: '/products/land', order: 3 },
+                    { id: 'footer-link-2-4', label: 'Resorts', href: '/products/resorts', order: 4 },
+                    { id: 'footer-link-2-5', label: 'Hotels', href: '/products/hotels', order: 5 },
+                ],
+            },
+        ],
+        contactInfo: {
+            address: 'House: 50, Level-5, Lake Circus Kalabagan, Dhaka 1209, Bangladesh',
+            phone: '+880 1677-600000',
+            email: 'hello.nexrealestate@gmail.com',
+        },
+        socialLinks: {
+            facebook: 'https://www.facebook.com/NexRealEstateLtd',
+            youtube: 'https://www.youtube.com/@NexRealEstateLtd',
+            linkedin: 'https://www.linkedin.com/company/nex-realestate/',
+        },
+        copyright: {
+            text: 'Nex Real Estate. All rights reserved.',
+            year: 2025,
+        },
+        developer: {
+            name: 'NexKraft',
+            url: 'https://nexkraft.com',
+        },
+    } as FooterSettings,
 };
 
 export const useCMSStore = create<CMSState>()(
@@ -316,6 +372,7 @@ export const useCMSStore = create<CMSState>()(
 
                     setSiteSettings: (settings) => set({ siteSettings: settings }),
                     setHeaderSettings: (settings) => set({ headerSettings: settings }),
+                    setFooterSettings: (settings) => set({ footerSettings: settings }),
 
                     // Project Actions
                     updateProject: (id, updates) =>
@@ -434,6 +491,7 @@ export const useCMSStore = create<CMSState>()(
                     careerApplications: state.careerApplications,
                     activityLog: state.activityLog,
                     headerSettings: state.headerSettings,
+                    footerSettings: state.footerSettings,
                 }),
             },
         ),

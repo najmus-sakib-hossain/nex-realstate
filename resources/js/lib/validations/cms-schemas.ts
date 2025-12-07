@@ -472,6 +472,48 @@ export const headerSettingsSchema = z.object({
 });
 
 // ================================
+// FOOTER SETTINGS SCHEMA
+// ================================
+
+export const footerLinkItemSchema = z.object({
+    id: z.string(),
+    label: z.string().min(1, 'Label is required'),
+    href: z.string().min(1, 'Link is required'),
+    order: z.number().int().min(0),
+});
+
+export const footerColumnSchema = z.object({
+    id: z.string(),
+    title: z.string().min(1, 'Title is required'),
+    links: z.array(footerLinkItemSchema),
+    order: z.number().int().min(0),
+});
+
+export const footerSettingsSchema = z.object({
+    logo: imageSchema,
+    tagline: z.string().min(1, 'Tagline is required'),
+    columns: z.array(footerColumnSchema).min(1, 'At least one column is required'),
+    contactInfo: z.object({
+        address: z.string().min(1, 'Address is required'),
+        phone: z.string().min(1, 'Phone is required'),
+        email: z.string().email('Must be a valid email'),
+    }),
+    socialLinks: z.object({
+        facebook: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+        youtube: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+        linkedin: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+    }),
+    copyright: z.object({
+        text: z.string().min(1, 'Copyright text is required'),
+        year: z.number().int().min(2020).max(2100),
+    }),
+    developer: z.object({
+        name: z.string().min(1, 'Developer name is required'),
+        url: z.string().url('Must be a valid URL'),
+    }),
+});
+
+// ================================
 // TYPE EXPORTS
 // ================================
 
@@ -494,3 +536,6 @@ export type JobOpeningFormData = z.infer<typeof jobOpeningSchema>;
 export type HeaderSettingsFormData = z.infer<typeof headerSettingsSchema>;
 export type NavigationItemFormData = z.infer<typeof navigationItemSchema>;
 export type NavigationChildItemFormData = z.infer<typeof navigationChildItemSchema>;
+export type FooterSettingsFormData = z.infer<typeof footerSettingsSchema>;
+export type FooterColumnFormData = z.infer<typeof footerColumnSchema>;
+export type FooterLinkItemFormData = z.infer<typeof footerLinkItemSchema>;

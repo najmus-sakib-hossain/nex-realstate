@@ -13,14 +13,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
 import { AdminLayout } from '@/layouts/admin-layout';
-import { headerSettingsSchema } from '@/lib/validations/cms-schemas';
+import { footerSettingsSchema } from '@/lib/validations/cms-schemas';
 import { useCMSStore } from '@/stores/cms-store';
-import type { HeaderSettings, NavigationChildItem, NavigationItem } from '@/types/cms';
+import type { FooterSettings } from '@/types/cms';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import {
     ChevronDown,
     ChevronUp,
@@ -39,34 +39,34 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import type { z } from 'zod';
 
-type HeaderSettingsFormData = z.infer<typeof headerSettingsSchema>;
+type FooterSettingsFormData = z.infer<typeof footerSettingsSchema>;
 
-export default function AdminHeaderPage() {
-    const { headerSettings, setHeaderSettings } = useCMSStore();
+export default function AdminFooterPage() {
+    const { footerSettings, setFooterSettings } = useCMSStore();
     const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
-    const form = useForm<HeaderSettingsFormData>({
-        resolver: zodResolver(headerSettingsSchema),
-        defaultValues: headerSettings || undefined,
+    const form = useForm<FooterSettingsFormData>({
+        resolver: zodResolver(footerSettingsSchema),
+        defaultValues: footerSettings || undefined,
     });
 
     const {
-        fields: navigationFields,
-        append: appendNavigation,
-        remove: removeNavigation,
-        move: moveNavigation,
+        fields: columnFields,
+        append: appendColumn,
+        remove: removeColumn,
+        move: moveColumn,
     } = useFieldArray({
         control: form.control,
-        name: 'navigation',
+        name: 'columns',
     });
 
     // Load data on mount
     useEffect(() => {
-        if (headerSettings) {
-            form.reset(headerSettings);
-            setLogoPreview(headerSettings.logo.url);
+        if (footerSettings) {
+            form.reset(footerSettings);
+            setLogoPreview(footerSettings.logo.url);
         }
-    }, [headerSettings, form]);
+    }, [footerSettings, form]);
 
     // Handle logo upload
     const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,65 +88,64 @@ export default function AdminHeaderPage() {
 
     // Save mutation
     const saveMutation = useMutation({
-        mutationFn: async (data: HeaderSettingsFormData) => {
+        mutationFn: async (data: FooterSettingsFormData) => {
             // Simulate API call
             await new Promise((resolve) => setTimeout(resolve, 1000));
             return data;
         },
         onSuccess: (data) => {
-            setHeaderSettings(data);
-            toast.success('Header settings saved successfully!');
+            setFooterSettings(data);
+            toast.success('Footer settings saved successfully!');
         },
         onError: () => {
-            toast.error('Failed to save header settings');
+            toast.error('Failed to save footer settings');
         },
     });
 
-    const onSubmit = (data: HeaderSettingsFormData) => {
+    const onSubmit = (data: FooterSettingsFormData) => {
         saveMutation.mutate(data);
     };
 
-    const addNavigationItem = () => {
-        const newOrder = navigationFields.length + 1;
-        appendNavigation({
-            id: `nav-${Date.now()}`,
-            name: 'New Item',
-            href: '/',
+    const addColumn = () => {
+        const newOrder = columnFields.length + 1;
+        appendColumn({
+            id: `footer-col-${Date.now()}`,
+            title: 'New Column',
+            links: [],
             order: newOrder,
-            children: [],
         });
     };
 
-    const addChildItem = (parentIndex: number) => {
-        const currentChildren = form.getValues(`navigation.${parentIndex}.children`) || [];
-        const newOrder = currentChildren.length + 1;
-        const updatedChildren = [
-            ...currentChildren,
+    const addLink = (columnIndex: number) => {
+        const currentLinks = form.getValues(`columns.${columnIndex}.links`) || [];
+        const newOrder = currentLinks.length + 1;
+        const updatedLinks = [
+            ...currentLinks,
             {
-                id: `nav-${Date.now()}-${newOrder}`,
-                name: 'New Child',
+                id: `footer-link-${Date.now()}-${newOrder}`,
+                label: 'New Link',
                 href: '/',
                 order: newOrder,
             },
         ];
-        form.setValue(`navigation.${parentIndex}.children`, updatedChildren);
+        form.setValue(`columns.${columnIndex}.links`, updatedLinks);
     };
 
-    const removeChildItem = (parentIndex: number, childIndex: number) => {
-        const currentChildren = form.getValues(`navigation.${parentIndex}.children`) || [];
-        const updatedChildren = currentChildren.filter((_, i) => i !== childIndex);
-        form.setValue(`navigation.${parentIndex}.children`, updatedChildren);
+    const removeLink = (columnIndex: number, linkIndex: number) => {
+        const currentLinks = form.getValues(`columns.${columnIndex}.links`) || [];
+        const updatedLinks = currentLinks.filter((_, i) => i !== linkIndex);
+        form.setValue(`columns.${columnIndex}.links`, updatedLinks);
     };
 
     return (
-        <AdminLayout title="Header Settings">
+        <AdminLayout title="Footer Settings">
             <div className="space-y-6">
                 {/* Header */}
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-2xl font-bold">Header & Navigation Settings</h2>
+                        <h2 className="text-2xl font-bold">Footer Settings</h2>
                         <p className="text-muted-foreground">
-                            Manage your website header, branding, and navigation menu
+                            Manage your website footer, links, and contact information
                         </p>
                     </div>
                     <Button
@@ -170,20 +169,21 @@ export default function AdminHeaderPage() {
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                         <Tabs defaultValue="branding">
-                            <TabsList className="grid w-full grid-cols-4">
-                                <TabsTrigger value="branding">Branding</TabsTrigger>
-                                <TabsTrigger value="topbar">Top Bar</TabsTrigger>
-                                <TabsTrigger value="navigation">Navigation</TabsTrigger>
-                                <TabsTrigger value="cta">CTA Button</TabsTrigger>
+                            <TabsList className="grid w-full grid-cols-5">
+                                <TabsTrigger value="branding">Logo</TabsTrigger>
+                                <TabsTrigger value="columns">Columns</TabsTrigger>
+                                <TabsTrigger value="contact">Contact</TabsTrigger>
+                                <TabsTrigger value="social">Social</TabsTrigger>
+                                <TabsTrigger value="copyright">Copyright</TabsTrigger>
                             </TabsList>
 
-                            {/* Branding Tab */}
+                            {/* Logo Tab */}
                             <TabsContent value="branding" className="space-y-4">
                                 <Card>
                                     <CardHeader>
-                                        <CardTitle>Logo</CardTitle>
+                                        <CardTitle>Logo & Tagline</CardTitle>
                                         <CardDescription>
-                                            Upload and manage your website logo
+                                            Configure your footer logo and tagline
                                         </CardDescription>
                                     </CardHeader>
                                     <CardContent className="space-y-6">
@@ -232,8 +232,33 @@ export default function AdminHeaderPage() {
                                                         </div>
                                                     </FormControl>
                                                     <FormDescription>
-                                                        Upload your company logo (recommended: PNG
+                                                        Upload your footer logo (recommended: PNG
                                                         with transparent background)
+                                                    </FormDescription>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+
+                                        <Separator />
+
+                                        {/* Tagline */}
+                                        <FormField
+                                            control={form.control}
+                                            name="tagline"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Tagline</FormLabel>
+                                                    <FormControl>
+                                                        <Textarea
+                                                            {...field}
+                                                            rows={3}
+                                                            placeholder="Where Quality meets Comfort..."
+                                                        />
+                                                    </FormControl>
+                                                    <FormDescription>
+                                                        A brief tagline or description for your
+                                                        company
                                                     </FormDescription>
                                                     <FormMessage />
                                                 </FormItem>
@@ -243,7 +268,7 @@ export default function AdminHeaderPage() {
                                         {/* Preview */}
                                         <div className="rounded-lg border bg-white p-4">
                                             <p className="mb-2 text-sm font-medium">Preview:</p>
-                                            <div className="flex items-center gap-2">
+                                            <div className="space-y-2">
                                                 {logoPreview ? (
                                                     <img
                                                         src={logoPreview}
@@ -251,190 +276,42 @@ export default function AdminHeaderPage() {
                                                         className="h-12 w-auto"
                                                     />
                                                 ) : (
-                                                    <p className="text-sm text-muted-foreground">No logo uploaded</p>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        No logo uploaded
+                                                    </p>
                                                 )}
+                                                <p className="text-sm text-muted-foreground">
+                                                    {form.watch('tagline')}
+                                                </p>
                                             </div>
                                         </div>
                                     </CardContent>
                                 </Card>
                             </TabsContent>
 
-                            {/* Top Bar Tab */}
-                            <TabsContent value="topbar" className="space-y-4">
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle>Top Bar Settings</CardTitle>
-                                        <CardDescription>
-                                            Configure contact information and social links
-                                        </CardDescription>
-                                    </CardHeader>
-                                    <CardContent className="space-y-6">
-                                        {/* Show Top Bar */}
-                                        <FormField
-                                            control={form.control}
-                                            name="showTopBar"
-                                            render={({ field }) => (
-                                                <FormItem className="flex items-center justify-between rounded-lg border p-4">
-                                                    <div className="space-y-0.5">
-                                                        <FormLabel className="text-base">
-                                                            Show Top Bar
-                                                        </FormLabel>
-                                                        <FormDescription>
-                                                            Display top bar with contact info and
-                                                            social links
-                                                        </FormDescription>
-                                                    </div>
-                                                    <FormControl>
-                                                        <Switch
-                                                            checked={field.value}
-                                                            onCheckedChange={field.onChange}
-                                                        />
-                                                    </FormControl>
-                                                </FormItem>
-                                            )}
-                                        />
-
-                                        <Separator />
-
-                                        {/* Contact Information */}
-                                        <div className="space-y-4">
-                                            <h3 className="font-semibold">Contact Information</h3>
-                                            <div className="grid gap-4 md:grid-cols-2">
-                                                <FormField
-                                                    control={form.control}
-                                                    name="topBar.contactPhone"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>Phone Number</FormLabel>
-                                                            <FormControl>
-                                                                <Input
-                                                                    {...field}
-                                                                    placeholder="+880 1677-600000"
-                                                                />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-
-                                                <FormField
-                                                    control={form.control}
-                                                    name="topBar.contactEmail"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>Email Address</FormLabel>
-                                                            <FormControl>
-                                                                <Input
-                                                                    {...field}
-                                                                    type="email"
-                                                                    placeholder="hello@example.com"
-                                                                />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <Separator />
-
-                                        {/* Social Links */}
-                                        <div className="space-y-4">
-                                            <h3 className="font-semibold">Social Media Links</h3>
-                                            <div className="space-y-4">
-                                                <FormField
-                                                    control={form.control}
-                                                    name="topBar.socialLinks.facebook"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel className="flex items-center gap-2">
-                                                                <Facebook className="h-4 w-4" />
-                                                                Facebook
-                                                            </FormLabel>
-                                                            <FormControl>
-                                                                <Input
-                                                                    {...field}
-                                                                    placeholder="https://facebook.com/..."
-                                                                />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-
-                                                <FormField
-                                                    control={form.control}
-                                                    name="topBar.socialLinks.youtube"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel className="flex items-center gap-2">
-                                                                <Youtube className="h-4 w-4" />
-                                                                YouTube
-                                                            </FormLabel>
-                                                            <FormControl>
-                                                                <Input
-                                                                    {...field}
-                                                                    placeholder="https://youtube.com/..."
-                                                                />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-
-                                                <FormField
-                                                    control={form.control}
-                                                    name="topBar.socialLinks.linkedin"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel className="flex items-center gap-2">
-                                                                <Linkedin className="h-4 w-4" />
-                                                                LinkedIn
-                                                            </FormLabel>
-                                                            <FormControl>
-                                                                <Input
-                                                                    {...field}
-                                                                    placeholder="https://linkedin.com/..."
-                                                                />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </TabsContent>
-
-                            {/* Navigation Tab */}
-                            <TabsContent value="navigation" className="space-y-4">
+                            {/* Columns Tab */}
+                            <TabsContent value="columns" className="space-y-4">
                                 <Card>
                                     <CardHeader className="flex flex-row items-center justify-between">
                                         <div>
-                                            <CardTitle>Navigation Menu</CardTitle>
+                                            <CardTitle>Footer Columns</CardTitle>
                                             <CardDescription>
-                                                Manage your website navigation items and submenus
+                                                Manage footer link columns
                                             </CardDescription>
                                         </div>
-                                        <Button
-                                            type="button"
-                                            onClick={addNavigationItem}
-                                            size="sm"
-                                        >
+                                        <Button type="button" onClick={addColumn} size="sm">
                                             <Plus className="mr-2 h-4 w-4" />
-                                            Add Item
+                                            Add Column
                                         </Button>
                                     </CardHeader>
                                     <CardContent>
                                         <ScrollArea className="h-[600px] pr-4">
                                             <div className="space-y-4">
-                                                {navigationFields.map((field, index) => (
+                                                {columnFields.map((field, index) => (
                                                     <Card key={field.id} className="border-2">
                                                         <CardContent className="pt-6">
                                                             <div className="space-y-4">
-                                                                {/* Navigation Item Header */}
+                                                                {/* Column Header */}
                                                                 <div className="flex items-start gap-4">
                                                                     <div className="flex flex-col gap-1 pt-2">
                                                                         <Button
@@ -444,7 +321,7 @@ export default function AdminHeaderPage() {
                                                                             className="h-6 w-6"
                                                                             onClick={() =>
                                                                                 index > 0 &&
-                                                                                moveNavigation(
+                                                                                moveColumn(
                                                                                     index,
                                                                                     index - 1,
                                                                                 )
@@ -461,16 +338,16 @@ export default function AdminHeaderPage() {
                                                                             className="h-6 w-6"
                                                                             onClick={() =>
                                                                                 index <
-                                                                                    navigationFields.length -
+                                                                                    columnFields.length -
                                                                                         1 &&
-                                                                                moveNavigation(
+                                                                                moveColumn(
                                                                                     index,
                                                                                     index + 1,
                                                                                 )
                                                                             }
                                                                             disabled={
                                                                                 index ===
-                                                                                navigationFields.length -
+                                                                                columnFields.length -
                                                                                     1
                                                                             }
                                                                         >
@@ -479,89 +356,62 @@ export default function AdminHeaderPage() {
                                                                     </div>
 
                                                                     <div className="flex-1 space-y-4">
-                                                                        <div className="grid gap-4 md:grid-cols-2">
-                                                                            <FormField
-                                                                                control={
-                                                                                    form.control
-                                                                                }
-                                                                                name={`navigation.${index}.name`}
-                                                                                render={({
-                                                                                    field,
-                                                                                }) => (
-                                                                                    <FormItem>
-                                                                                        <FormLabel>
-                                                                                            Name
-                                                                                        </FormLabel>
-                                                                                        <FormControl>
-                                                                                            <Input
-                                                                                                {...field}
-                                                                                            />
-                                                                                        </FormControl>
-                                                                                        <FormMessage />
-                                                                                    </FormItem>
-                                                                                )}
-                                                                            />
+                                                                        {/* Column Title */}
+                                                                        <FormField
+                                                                            control={form.control}
+                                                                            name={`columns.${index}.title`}
+                                                                            render={({ field }) => (
+                                                                                <FormItem>
+                                                                                    <FormLabel>
+                                                                                        Column Title
+                                                                                    </FormLabel>
+                                                                                    <FormControl>
+                                                                                        <Input
+                                                                                            {...field}
+                                                                                        />
+                                                                                    </FormControl>
+                                                                                    <FormMessage />
+                                                                                </FormItem>
+                                                                            )}
+                                                                        />
 
-                                                                            <FormField
-                                                                                control={
-                                                                                    form.control
-                                                                                }
-                                                                                name={`navigation.${index}.href`}
-                                                                                render={({
-                                                                                    field,
-                                                                                }) => (
-                                                                                    <FormItem>
-                                                                                        <FormLabel>
-                                                                                            Link
-                                                                                        </FormLabel>
-                                                                                        <FormControl>
-                                                                                            <Input
-                                                                                                {...field}
-                                                                                            />
-                                                                                        </FormControl>
-                                                                                        <FormMessage />
-                                                                                    </FormItem>
-                                                                                )}
-                                                                            />
-                                                                        </div>
-
-                                                                        {/* Child Items */}
+                                                                        {/* Links */}
                                                                         <div className="space-y-2">
                                                                             <div className="flex items-center justify-between">
                                                                                 <Label className="text-sm font-medium">
-                                                                                    Submenu Items
+                                                                                    Links
                                                                                 </Label>
                                                                                 <Button
                                                                                     type="button"
                                                                                     variant="outline"
                                                                                     size="sm"
                                                                                     onClick={() =>
-                                                                                        addChildItem(
+                                                                                        addLink(
                                                                                             index,
                                                                                         )
                                                                                     }
                                                                                 >
                                                                                     <Plus className="mr-1 h-3 w-3" />
-                                                                                    Add Submenu
+                                                                                    Add Link
                                                                                 </Button>
                                                                             </div>
 
                                                                             {form.watch(
-                                                                                `navigation.${index}.children`,
+                                                                                `columns.${index}.links`,
                                                                             )?.length ? (
                                                                                 <div className="space-y-2 rounded-lg border bg-muted/50 p-3">
                                                                                     {form
                                                                                         .watch(
-                                                                                            `navigation.${index}.children`,
+                                                                                            `columns.${index}.links`,
                                                                                         )
                                                                                         ?.map(
                                                                                             (
                                                                                                 _,
-                                                                                                childIndex,
+                                                                                                linkIndex,
                                                                                             ) => (
                                                                                                 <div
                                                                                                     key={
-                                                                                                        childIndex
+                                                                                                        linkIndex
                                                                                                     }
                                                                                                     className="flex items-end gap-2"
                                                                                                 >
@@ -569,7 +419,7 @@ export default function AdminHeaderPage() {
                                                                                                         control={
                                                                                                             form.control
                                                                                                         }
-                                                                                                        name={`navigation.${index}.children.${childIndex}.name`}
+                                                                                                        name={`columns.${index}.links.${linkIndex}.label`}
                                                                                                         render={({
                                                                                                             field,
                                                                                                         }) => (
@@ -577,7 +427,7 @@ export default function AdminHeaderPage() {
                                                                                                                 <FormControl>
                                                                                                                     <Input
                                                                                                                         {...field}
-                                                                                                                        placeholder="Name"
+                                                                                                                        placeholder="Label"
                                                                                                                     />
                                                                                                                 </FormControl>
                                                                                                             </FormItem>
@@ -587,7 +437,7 @@ export default function AdminHeaderPage() {
                                                                                                         control={
                                                                                                             form.control
                                                                                                         }
-                                                                                                        name={`navigation.${index}.children.${childIndex}.href`}
+                                                                                                        name={`columns.${index}.links.${linkIndex}.href`}
                                                                                                         render={({
                                                                                                             field,
                                                                                                         }) => (
@@ -606,9 +456,9 @@ export default function AdminHeaderPage() {
                                                                                                         variant="ghost"
                                                                                                         size="icon"
                                                                                                         onClick={() =>
-                                                                                                            removeChildItem(
+                                                                                                            removeLink(
                                                                                                                 index,
-                                                                                                                childIndex,
+                                                                                                                linkIndex,
                                                                                                             )
                                                                                                         }
                                                                                                     >
@@ -620,8 +470,7 @@ export default function AdminHeaderPage() {
                                                                                 </div>
                                                                             ) : (
                                                                                 <p className="text-center text-sm text-muted-foreground">
-                                                                                    No submenu
-                                                                                    items
+                                                                                    No links added
                                                                                 </p>
                                                                             )}
                                                                         </div>
@@ -632,7 +481,7 @@ export default function AdminHeaderPage() {
                                                                         variant="ghost"
                                                                         size="icon"
                                                                         onClick={() =>
-                                                                            removeNavigation(index)
+                                                                            removeColumn(index)
                                                                         }
                                                                     >
                                                                         <Trash2 className="h-4 w-4 text-destructive" />
@@ -648,27 +497,45 @@ export default function AdminHeaderPage() {
                                 </Card>
                             </TabsContent>
 
-                            {/* CTA Button Tab */}
-                            <TabsContent value="cta" className="space-y-4">
+                            {/* Contact Tab */}
+                            <TabsContent value="contact" className="space-y-4">
                                 <Card>
                                     <CardHeader>
-                                        <CardTitle>Call-to-Action Button</CardTitle>
+                                        <CardTitle>Contact Information</CardTitle>
                                         <CardDescription>
-                                            Configure the primary CTA button in the header
+                                            Manage footer contact details
                                         </CardDescription>
                                     </CardHeader>
                                     <CardContent className="space-y-4">
+                                        <FormField
+                                            control={form.control}
+                                            name="contactInfo.address"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Address</FormLabel>
+                                                    <FormControl>
+                                                        <Textarea
+                                                            {...field}
+                                                            rows={3}
+                                                            placeholder="Company address"
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+
                                         <div className="grid gap-4 md:grid-cols-2">
                                             <FormField
                                                 control={form.control}
-                                                name="ctaButton.text"
+                                                name="contactInfo.phone"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Button Text</FormLabel>
+                                                        <FormLabel>Phone Number</FormLabel>
                                                         <FormControl>
                                                             <Input
                                                                 {...field}
-                                                                placeholder="Book a Visit"
+                                                                placeholder="+880 1677-600000"
                                                             />
                                                         </FormControl>
                                                         <FormMessage />
@@ -678,14 +545,183 @@ export default function AdminHeaderPage() {
 
                                             <FormField
                                                 control={form.control}
-                                                name="ctaButton.href"
+                                                name="contactInfo.email"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Button Link</FormLabel>
+                                                        <FormLabel>Email Address</FormLabel>
                                                         <FormControl>
                                                             <Input
                                                                 {...field}
-                                                                placeholder="/contact"
+                                                                type="email"
+                                                                placeholder="hello@example.com"
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+
+                            {/* Social Tab */}
+                            <TabsContent value="social" className="space-y-4">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Social Media Links</CardTitle>
+                                        <CardDescription>
+                                            Configure social media profiles
+                                        </CardDescription>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <FormField
+                                            control={form.control}
+                                            name="socialLinks.facebook"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className="flex items-center gap-2">
+                                                        <Facebook className="h-4 w-4" />
+                                                        Facebook
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            {...field}
+                                                            placeholder="https://facebook.com/..."
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+
+                                        <FormField
+                                            control={form.control}
+                                            name="socialLinks.youtube"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className="flex items-center gap-2">
+                                                        <Youtube className="h-4 w-4" />
+                                                        YouTube
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            {...field}
+                                                            placeholder="https://youtube.com/..."
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+
+                                        <FormField
+                                            control={form.control}
+                                            name="socialLinks.linkedin"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className="flex items-center gap-2">
+                                                        <Linkedin className="h-4 w-4" />
+                                                        LinkedIn
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            {...field}
+                                                            placeholder="https://linkedin.com/..."
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+
+                            {/* Copyright Tab */}
+                            <TabsContent value="copyright" className="space-y-4">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Copyright & Developer Info</CardTitle>
+                                        <CardDescription>
+                                            Manage copyright and developer credits
+                                        </CardDescription>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <div className="grid gap-4 md:grid-cols-2">
+                                            <FormField
+                                                control={form.control}
+                                                name="copyright.text"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Copyright Text</FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                {...field}
+                                                                placeholder="Company Name. All rights reserved."
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <FormField
+                                                control={form.control}
+                                                name="copyright.year"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Copyright Year</FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                {...field}
+                                                                type="number"
+                                                                onChange={(e) =>
+                                                                    field.onChange(
+                                                                        parseInt(
+                                                                            e.target.value,
+                                                                            10,
+                                                                        ),
+                                                                    )
+                                                                }
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+
+                                        <Separator />
+
+                                        <div className="grid gap-4 md:grid-cols-2">
+                                            <FormField
+                                                control={form.control}
+                                                name="developer.name"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Developer Name</FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                {...field}
+                                                                placeholder="NexKraft"
+                                                            />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            <FormField
+                                                control={form.control}
+                                                name="developer.url"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Developer URL</FormLabel>
+                                                        <FormControl>
+                                                            <Input
+                                                                {...field}
+                                                                placeholder="https://example.com"
                                                             />
                                                         </FormControl>
                                                         <FormMessage />
@@ -697,7 +733,21 @@ export default function AdminHeaderPage() {
                                         {/* Preview */}
                                         <div className="rounded-lg border bg-muted/50 p-4">
                                             <p className="mb-2 text-sm font-medium">Preview:</p>
-                                            <Button>{form.watch('ctaButton.text')}</Button>
+                                            <div className="space-y-1 text-sm text-muted-foreground">
+                                                <p>
+                                                    © {form.watch('copyright.year')}{' '}
+                                                    {form.watch('copyright.text')}
+                                                </p>
+                                                <p>
+                                                    Developed and maintained by{' '}
+                                                    <a
+                                                        href={form.watch('developer.url')}
+                                                        className="font-medium text-foreground hover:underline"
+                                                    >
+                                                        {form.watch('developer.name')}
+                                                    </a>
+                                                </p>
+                                            </div>
                                         </div>
                                     </CardContent>
                                 </Card>

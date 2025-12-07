@@ -184,6 +184,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         return Inertia::render('admin/header/index');
     })->name('header');
 
+    // Footer Settings
+    Route::get('/footer', function () {
+        return Inertia::render('admin/footer/index');
+    })->name('footer');
+
     // Settings
     Route::get('/settings', function () {
         return Inertia::render('admin/settings/index');

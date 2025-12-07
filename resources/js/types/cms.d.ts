@@ -512,6 +512,44 @@ export interface HeaderSettings {
     };
 }
 
+export interface FooterLinkItem {
+    id: string;
+    label: string;
+    href: string;
+    order: number;
+}
+
+export interface FooterColumn {
+    id: string;
+    title: string;
+    links: FooterLinkItem[];
+    order: number;
+}
+
+export interface FooterSettings {
+    logo: ImageAsset;
+    tagline: string;
+    columns: FooterColumn[];
+    contactInfo: {
+        address: string;
+        phone: string;
+        email: string;
+    };
+    socialLinks: {
+        facebook?: string;
+        youtube?: string;
+        linkedin?: string;
+    };
+    copyright: {
+        text: string;
+        year: number;
+    };
+    developer: {
+        name: string;
+        url: string;
+    };
+}
+
 export interface SiteSettings {
     siteName: string;
     tagline: string;
