@@ -35,7 +35,7 @@ export function Navbar() {
     return (
         <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
             {/* Top Bar */}
-            {headerSettings.showTopBar && (
+            {/* {headerSettings.showTopBar && (
                 <div className="hidden border-b bg-primary text-sm text-primary-foreground lg:block">
                     <div className="container mx-auto flex items-center justify-between px-4 py-2">
                         <div className="flex items-center gap-6">
@@ -88,7 +88,7 @@ export function Navbar() {
                         </div>
                     </div>
                 </div>
-            )}
+            )} */}
 
             {/* Main Navigation */}
             <div className="container mx-auto px-4 w-full lg:max-w-9xl">

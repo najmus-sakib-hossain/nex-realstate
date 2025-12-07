@@ -91,7 +91,7 @@ export default function HomePage() {
             {/* Custom Hero Section with Blue Sky and Parallax Building */}
             <div
                 ref={heroRef}
-                className="relative flex min-h-[92.5vh] lg:min-h-[89vh] items-center justify-center overflow-hidden"
+                className="relative flex min-h-[92.5vh] lg:min-h-[95vh] items-center justify-center overflow-hidden"
             >
                 {/* Clear Blue Sky Background Image */}
                 <div
