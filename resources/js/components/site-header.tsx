@@ -91,7 +91,7 @@ export function Navbar() {
             )} */}
 
             {/* Main Navigation */}
-            <div className="container mx-auto px-4 w-full lg:max-w-9xl">
+            <div className="container mx-auto w-full">
                 <div className="flex h-16 items-center justify-between">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2">
