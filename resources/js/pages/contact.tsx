@@ -252,13 +252,12 @@ export default function ContactPage() {
             </Section>
 
             {/* Map Section */}
-            <Section className="bg-muted/50">
+            {/* <Section className="bg-muted/50">
                 <SectionHeader
                     title="Visit Our Office"
                     subtitle="We'd love to meet you in person"
                 />
                 <div className="aspect-[21/9] overflow-hidden rounded-lg bg-muted">
-                    {/* Placeholder for map - you can integrate Google Maps or other map providers */}
                     <div className="flex h-full items-center justify-center text-muted-foreground">
                         <div className="text-center">
                             <MapPin className="mx-auto mb-4 h-12 w-12" />
@@ -269,7 +268,7 @@ export default function ContactPage() {
                         </div>
                     </div>
                 </div>
-            </Section>
+            </Section> */}
         </FrontendLayout>
     );
 }

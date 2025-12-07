@@ -30,7 +30,21 @@ export function Navbar() {
 
     if (!headerSettings) return null;
 
-    const navigation = headerSettings.navigation.sort((a, b) => a.order - b.order);
+    const navigation = headerSettings.navigation
+        .filter((item) => !['Home', 'Land Wanted', 'Career'].includes(item.name))
+        .sort((a, b) => {
+            // Custom order: put "About Us" right after "Projects"
+            const order = ['Services', 'Products', 'Projects', 'About Us', 'Investment', 'Media & News', 'Business', 'Contact'];
+            const indexA = order.indexOf(a.name);
+            const indexB = order.indexOf(b.name);
+            
+            if (indexA !== -1 && indexB !== -1) {
+                return indexA - indexB;
+            }
+            if (indexA !== -1) return -1;
+            if (indexB !== -1) return 1;
+            return a.order - b.order;
+        });
 
     return (
         <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
