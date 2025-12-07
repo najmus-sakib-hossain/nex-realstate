@@ -35,12 +35,12 @@ const iconMap: Record<string, React.ReactNode> = {
 export default function HomePage() {
     // Get content from Zustand store (auto-updates when admin saves changes)
     const { homeContent, services: allServices, testimonials: storeTestimonials } = useCMSStore();
-    
+
     // Fetch server content (populates store on success)
     const { data: serverHomeContent } = useHomeContent();
     const { data: serverServices } = useServices();
     const { data: serverTestimonials } = useTestimonials();
-    
+
     const content = serverHomeContent || homeContent!;
     const services = (serverServices || allServices).slice(0, 6);
     const testimonials = serverTestimonials || storeTestimonials;
@@ -61,12 +61,12 @@ export default function HomePage() {
         target: heroRef,
         offset: ['start start', 'end start'],
     });
-    
+
     // Building moves up as user scrolls (starts from bottom, moves up)
     const buildingY = useTransform(scrollYProgress, [0, 1], ['5%', '0%']);
     // Text fades out as building covers it
     const textOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-    
+
     // Hide the text completely when scrolled past hero section
     useEffect(() => {
         const handleScroll = () => {
@@ -76,10 +76,10 @@ export default function HomePage() {
                 setIsHeroVisible(heroBottom > 100);
             }
         };
-        
+
         window.addEventListener('scroll', handleScroll);
         handleScroll(); // Check initial state
-        
+
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
@@ -91,7 +91,7 @@ export default function HomePage() {
             {/* Custom Hero Section with Blue Sky and Parallax Building */}
             <div
                 ref={heroRef}
-                className="relative flex min-h-screen items-center justify-center overflow-hidden"
+                className="relative flex min-h-[92.5vh] lg:min-h-[89vh] items-center justify-center overflow-hidden"
             >
                 {/* Clear Blue Sky Background Image */}
                 <div
@@ -102,35 +102,22 @@ export default function HomePage() {
                         backgroundPosition: 'center',
                     }}
                 />
-                
+
                 {/* Content Layer - z-index 10 */}
                 {isHeroVisible && (
-                    <motion.div 
-                        className="fixed top-64 left-1/2 translate-x-[-50%] px-4 text-center w-[80%] overflow-hidden"
+                    <motion.div
+                        className="fixed top-[25%] md:top-[15%] lg:top-32 left-1/2 translate-x-[-50%] px-4 text-center w-full lg:w-[80%] overflow-hidden"
                         style={{ opacity: textOpacity }}
                     >
-                    <h1 className="text-5xl md:text-8xl font-bold tracking-tight text-white drop-shadow-lg">
-                        {content.heroBanner.title}
-                    </h1>
-                    <p className="mx-auto mt-6 text-white md:text-xl w-full">
-                        {content.heroBanner.subtitle}
-                    </p>
-                    {/* <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                        <Button size="lg" asChild>
-                            <Link href="/projects">
-                                {content.heroBanner.ctaButtons.primary.text}
-                                <ArrowRight className="ml-2 h-5 w-5" />
-                            </Link>
-                        </Button>
-                        <Button size="lg" variant="outline" className="border-primary bg-white/80 text-primary hover:bg-primary hover:text-white" asChild>
-                            <Link href="/contact">
-                                {content.heroBanner.ctaButtons.secondary.text}
-                            </Link>
-                        </Button>
-                    </div> */}
+                        <h1 className="text-5xl md:text-8xl font-bold tracking-tight text-white drop-shadow-lg">
+                            {content.heroBanner.title}
+                        </h1>
+                        <p className="mx-auto mt-6 text-white text-xl md:text-2xl w-full">
+                            {content.heroBanner.subtitle}
+                        </p>
                     </motion.div>
                 )}
-                
+
                 {/* Parallax Transparent Building - z-index 20 (above text) */}
                 <motion.div
                     className="pointer-events-none absolute bottom-0 left-0 z-20 w-full"
@@ -139,7 +126,7 @@ export default function HomePage() {
                     <img
                         src={heroForegroundUrl}
                         alt={heroForegroundAlt}
-                        className="h-auto w-full object-contain min-w-[500px]"
+                        className="h-auto min-w-full max-h-[75vh]"
                     />
                 </motion.div>
             </div>
