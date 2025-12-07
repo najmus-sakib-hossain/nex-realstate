@@ -187,7 +187,7 @@ export function TeamMemberCard({
     socialLinks,
 }: TeamMemberCardProps) {
     return (
-        <Card className="overflow-hidden pt-0 text-center">
+        <Card className="overflow-hidden pt-0 text-center min-h-full">
             <div className="aspect-square overflow-hidden">
                 <img
                     src={image}
